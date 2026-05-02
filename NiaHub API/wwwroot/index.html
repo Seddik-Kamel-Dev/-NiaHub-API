@@ -8,48 +8,51 @@
         <h1>🎸 Jam Sessions</h1>
         <ul id="list"></ul>
 
-        <script>fetch("https://localhost:7276/api/JamSessionAds")
-        .then(res => res.json())
-        .then(data => {
-            const list = document.getElementById("list");
+        <script>
+            const API_BASE_URL =
+                location.hostname === "localhost"
+                    ? "https://localhost:7276"
+                    : "https://niahub.cleverapps.io";
 
-            data.forEach(ad => {
-                const li = document.createElement("li");
+            fetch(`${API_BASE_URL}/api/JamSessionAds`)
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById("list");
 
-                console.log(ad);
+                data.forEach(ad => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        <strong>${ad.title}</strong><br/>
+                        ${ad.shortDescription ?? ""}<br/>
+                       Description :  ${ad.detailedDesciption && ad.detailedDesciption.trim() !== "" 
+                                ? ad.detailedDesciption 
+                                : "non renseignée"}<br/>
 
-                li.innerHTML = `
-                    <strong>${ad.title}</strong><br/>
-                    ${ad.shortDescription ?? ""}<br/>
-                   Description :  ${ad.detailedDesciption && ad.detailedDesciption.trim() !== "" 
-                            ? ad.detailedDesciption 
-                            : "non renseignée"}<br/>
+                        📍 ${ad.city ?? "Non renseigné"} - ${ad.venueName ?? ""}<br/>
 
-                    📍 ${ad.city ?? "Non renseigné"} - ${ad.venueName ?? ""}<br/>
+                        🎵 ${ad.styles?.join(", ") ?? "Non précisé"}<br/>
 
-                    🎵 ${ad.styles?.join(", ") ?? "Non précisé"}<br/>
+                        🎹 Instruments recherchés : ${ad.instrumentsNeeded?.join(", ") ?? "Non précisé"}<br/>
 
-                    🎹 Instruments recherchés : ${ad.instrumentsNeeded?.join(", ") ?? "Non précisé"}<br/>
+                        🎧 Matériels présents : ${
+                                ad.equipmentProvided?.length
+                                                        ? ad.equipmentProvided.join(", ")
+                                                        : "Non renseigné"
+                            }<br/>
+                        🎯 Niveau : ${ad.minimumLevel ?? "Non précisé"}<br/>
 
-                    🎧 Matériels présents : ${
-                            ad.equipmentProvided?.length
-                                                    ? ad.equipmentProvided.join(", ")
-                                                    : "Non renseigné"
-                        }<br/>
-                    🎯 Niveau : ${ad.minimumLevel ?? "Non précisé"}<br/>
+                        🕒 ${ad.recurrence ?? ""} à ${formatTime(ad.startTime)} (${ad.durationMinutes ?? 0} min)<br/>
 
-                    🕒 ${ad.recurrence ?? ""} à ${formatTime(ad.startTime)} (${ad.durationMinutes ?? 0} min)<br/>
-
-                    👤 ${ad.creatorUsername ?? "Anonyme"}<br/>
+                        👤 ${ad.creatorUsername ?? "Anonyme"}<br/>
                     
-                    👤👤 Max participation: ${ad.maxParticipants}
+                        👤👤 Max participation: ${ad.maxParticipants}
 
 
-                    <hr/>
-                `;
+                        <hr/>
+                    `;
 
-                list.appendChild(li);
-            });
+                    list.appendChild(li);
+                });
         })
         .catch(err => console.error("Erreur API :", err));
 
