@@ -1,3 +1,4 @@
+using NiaHub_API.Repository;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,5 +23,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Ajouté pour le fichier index.html
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+FakeData.SeedAds();
 
 app.Run();
